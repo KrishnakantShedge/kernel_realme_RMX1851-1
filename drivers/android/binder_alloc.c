@@ -764,8 +764,7 @@ int binder_alloc_mmap_handler(struct binder_alloc *alloc,
 	barrier();
 	alloc->vma = vma;
 	alloc->vma_vm_mm = vma->vm_mm;
-	/* Same as mmgrab() in later kernel versions */
-	atomic_inc(&alloc->vma_vm_mm->mm_count);
+	mmgrab(alloc->vma_vm_mm);
 
 	return 0;
 
