@@ -7770,6 +7770,7 @@ static void init_sched_energy(int cpu, struct sched_domain *sd,
 
 	sd->groups->sge = fn(cpu);
 }
+EXPORT_SYMBOL_GPL(sched_show_task);
 
 /*
  * Initializers for schedule domains
