@@ -472,6 +472,7 @@ static int fq_codel_init(struct Qdisc *sch, struct nlattr *opt)
 {
 	struct fq_codel_sched_data *q = qdisc_priv(sch);
 	int i;
+	int err;
 
 	sch->limit = 10*1024;
 	q->flows_cnt = 1024;
@@ -487,20 +488,23 @@ static int fq_codel_init(struct Qdisc *sch, struct nlattr *opt)
 	q->cparams.mtu = psched_mtu(qdisc_dev(sch));
 
 	if (opt) {
-		int err = fq_codel_change(sch, opt);
+		err = fq_codel_change(sch, opt);
 		if (err)
-			return err;
+			goto init_failure;
 	}
 
 	if (!q->flows) {
 		q->flows = fq_codel_zalloc(q->flows_cnt *
 					   sizeof(struct fq_codel_flow));
-		if (!q->flows)
-			return -ENOMEM;
+		if (!q->flows) {
+			err = -ENOMEM;
+			goto init_failure;
+		}
 		q->backlogs = fq_codel_zalloc(q->flows_cnt * sizeof(u32));
 		if (!q->backlogs) {
 			fq_codel_free(q->flows);
-			return -ENOMEM;
+			err = -ENOMEM;
+			goto alloc_failure;
 		}
 		for (i = 0; i < q->flows_cnt; i++) {
 			struct fq_codel_flow *flow = q->flows + i;
@@ -514,6 +518,13 @@ static int fq_codel_init(struct Qdisc *sch, struct nlattr *opt)
 	else
 		sch->flags &= ~TCQ_F_CAN_BYPASS;
 	return 0;
+
+alloc_failure:
+	kvfree(q->flows);
+	q->flows = NULL;
+init_failure:
+	q->flows_cnt = 0;
+	return err;
 }
 
 static int fq_codel_dump(struct Qdisc *sch, struct sk_buff *skb)
