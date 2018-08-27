@@ -5,3 +5,5 @@ lib-y		:= bitops.o clear_user.o delay.o copy_from_user.o	\
 		   strnlen.o strchr.o strrchr.o tishift.o
 
 CFLAGS_REMOVE_atomic_ll_sc.o := -pg
+
+obj-$(CONFIG_CRC32) += crc32.o
