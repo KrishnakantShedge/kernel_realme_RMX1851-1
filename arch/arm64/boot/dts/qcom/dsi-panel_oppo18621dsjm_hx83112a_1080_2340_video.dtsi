@@ -93,6 +93,7 @@
 			qcom,mdss-dsi-panel-on-check-value = <0x9d 0x9d 0x9d 0x9d>;
 			qcom,mdss-dsi-panel-status-read-length = <4>;
 			qcom,mdss-dsi-panel-max-error-count = <3>;
+			qcom,mdss-dsi-panel-jitter = <0x8 0xa>;
 	                qcom,mdss-dsi-on-command = [
 					29 01 00 00 00 00 04 B9 83 11 2A
 					29 01 00 00 3C 00 02 11 00
