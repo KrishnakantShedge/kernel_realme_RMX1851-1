@@ -13,6 +13,7 @@
 #include <linux/msm_drm_notify.h>
 #include <linux/slab.h>
 #include <linux/version.h>
+#include <linux/battery_saver.h>
 
 /* The sched_param struct is located elsewhere in newer kernels */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0)
@@ -90,7 +91,7 @@ static unsigned int get_min_freq(struct cpufreq_policy *policy)
 	unsigned int freq;
 
 	if (cpumask_test_cpu(policy->cpu, cpu_lp_mask) &&
-			test_bit(SCREEN_OFF, &b->state))
+			(test_bit(SCREEN_OFF, &b->state) || is_battery_saver_on()))
 		freq = idle_min_freq_lp;
 	else if (cpumask_test_cpu(policy->cpu, cpu_lp_mask))
 		freq = min_freq_lp;
@@ -123,7 +124,7 @@ bool should_kick_frame_boost(unsigned long timeout_ms)
 
 static void __cpu_input_boost_kick(struct boost_drv *b)
 {
-	if (test_bit(SCREEN_OFF, &b->state))
+	if (test_bit(SCREEN_OFF, &b->state) || is_battery_saver_on())
 		return;
 
 	if (!input_boost_duration)
@@ -230,6 +231,12 @@ static int cpu_notifier_cb(struct notifier_block *nb, unsigned long action,
 		return NOTIFY_OK;
 
 	policy->min = get_min_freq(policy);
+
+	/* Pin min freq to lowest when battery saver is on*/
+	if (is_battery_saver_on()) {
+		policy->min = policy->cpuinfo.min_freq;
+		return NOTIFY_OK;
+	}
 
 	/* Boost CPU to max frequency for max boost */
 	if (test_bit(MAX_BOOST, &b->state)) {
