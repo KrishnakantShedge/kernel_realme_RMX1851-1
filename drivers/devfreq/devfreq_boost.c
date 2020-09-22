@@ -28,6 +28,7 @@ struct df_boost_drv {
 	struct boost_dev devices[DEVFREQ_MAX];
 	struct notifier_block msm_drm_notif;
 	bool screen_awake;
+	unsigned long last_input_jiffies;
 };
 
 static struct df_boost_drv *df_boost_drv_g __read_mostly;
@@ -81,6 +82,15 @@ static void __devfreq_boost_kick_max(struct boost_dev *b,
 
 	queue_work(b->wq, &b->max_boost);
 }
+
+bool df_boost_within_input(unsigned long timeout_ms)
+{
+	struct df_boost_drv *d = df_boost_drv_g;
+
+	return time_before(jiffies, d->last_input_jiffies +
+			   msecs_to_jiffies(timeout_ms));
+}
+
 
 void devfreq_boost_kick_max(enum df_device device, unsigned int duration_ms)
 {
@@ -276,6 +286,8 @@ static void devfreq_boost_input_event(struct input_handle *handle,
 
 	for (i = 0; i < DEVFREQ_MAX; i++)
 		__devfreq_boost_kick(d->devices + i);
+
+	d->last_input_jiffies = jiffies;
 }
 
 static int devfreq_boost_input_connect(struct input_handler *handler,
@@ -382,6 +394,7 @@ static int __init devfreq_boost_init(void)
 	d->devices[DEVFREQ_MSM_CPUBW].boost_freq =
 		CONFIG_DEVFREQ_MSM_CPUBW_BOOST_FREQ;
 
+	d->last_input_jiffies = jiffies;
 	devfreq_boost_input_handler.private = d;
 	ret = input_register_handler(&devfreq_boost_input_handler);
 	if (ret) {
