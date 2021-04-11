@@ -30,6 +30,8 @@ static unsigned int min_freq_perf __read_mostly =
 	CONFIG_MIN_FREQ_PERF;
 static unsigned int idle_min_freq_lp __read_mostly =
 	CONFIG_IDLE_MIN_FREQ_LP;
+static unsigned int idle_min_freq_perf __read_mostly =
+	CONFIG_IDLE_MIN_FREQ_PERF;
 
 static unsigned short input_boost_duration __read_mostly =
 	CONFIG_INPUT_BOOST_DURATION_MS;
@@ -41,6 +43,7 @@ module_param(max_boost_freq_hp, uint, 0644);
 module_param(min_freq_lp, uint, 0644);
 module_param(min_freq_perf, uint, 0644);
 module_param(idle_min_freq_lp, uint, 0644);
+module_param(idle_min_freq_perf, uint, 0644);
 
 module_param(input_boost_duration, short, 0644);
 module_param(wake_boost_duration, short, 0644);
@@ -88,11 +91,16 @@ static unsigned int get_max_boost_freq(struct cpufreq_policy *policy)
 
 static unsigned int get_min_freq(struct cpufreq_policy *policy)
 {
+	struct boost_drv *b = &boost_drv_g;
 	unsigned int freq;
 
-	if (cpumask_test_cpu(policy->cpu, cpu_lp_mask) &&
-			(test_bit(SCREEN_OFF, &b->state) || is_battery_saver_on()))
-		freq = idle_min_freq_lp;
+	if (test_bit(SCREEN_OFF, &b->state) || is_battery_saver_on())
+	{
+		if (cpumask_test_cpu(policy->cpu, cpu_lp_mask))
+			freq = idle_min_freq_lp;
+		else
+			freq = idle_min_freq_perf;
+	}
 	else if (cpumask_test_cpu(policy->cpu, cpu_lp_mask))
 		freq = min_freq_lp;
 	else
