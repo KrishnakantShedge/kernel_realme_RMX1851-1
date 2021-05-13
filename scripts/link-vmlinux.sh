@@ -103,7 +103,7 @@ modpost_link()
 			--end-group"
 	fi
 
-	if [ -n "${CONFIG_LTO}" ]; then
+	if [ -n "${CONFIG_LTO}" ] || [ -n "${CONFIG_LTO_GCC}" ]; then
 		# This might take a while, so indicate that we're doing
 		# an LTO link
 		info LTO vmlinux.o
