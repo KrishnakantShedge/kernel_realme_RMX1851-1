@@ -30,7 +30,7 @@ static int num_rounds(struct crypto_aes_ctx *ctx)
 	return 6 + ctx->key_length / 4;
 }
 
-void aes_cipher_encrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
+__visible void aes_cipher_encrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
 {
 	struct crypto_aes_ctx *ctx = crypto_tfm_ctx(tfm);
 	struct aes_block *out = (struct aes_block *)dst;
@@ -75,7 +75,7 @@ void aes_cipher_encrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
 	kernel_neon_end();
 }
 
-void aes_cipher_decrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
+__visible void aes_cipher_decrypt(struct crypto_tfm *tfm, u8 dst[], u8 const src[])
 {
 	struct crypto_aes_ctx *ctx = crypto_tfm_ctx(tfm);
 	struct aes_block *out = (struct aes_block *)dst;
@@ -140,7 +140,7 @@ static u32 aes_sub(u32 input)
 	return ret;
 }
 
-int ce_aes_expandkey(struct crypto_aes_ctx *ctx, const u8 *in_key,
+__visible int ce_aes_expandkey(struct crypto_aes_ctx *ctx, const u8 *in_key,
 		     unsigned int key_len)
 {
 	/*
