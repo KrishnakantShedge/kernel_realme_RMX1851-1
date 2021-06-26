@@ -709,7 +709,7 @@ export LLVM_AR LLVM_DIS
 endif
 
 ifdef CONFIG_LTO_GCC
-LTO_CFLAGS	:= -flto -flto=jobserver -fno-fat-lto-objects \
+LTO_CFLAGS	:= -flto -flto=jobserver -fipa-pta -fno-fat-lto-objects \
 		   -fuse-linker-plugin -fwhole-program
 ifdef CONFIG_GRAPHITE
 LTO_CFLAGS    += -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block -ftree-vectorize
