@@ -22,5 +22,7 @@ struct system_pm_ops {
 
 extern void msm_cpuidle_set_sleep_disable(bool disable);
 
+void lpm_cluster_use_deepest_state(bool enable);
+
 uint32_t register_system_pm_ops(struct system_pm_ops *pm_ops);
 #endif
