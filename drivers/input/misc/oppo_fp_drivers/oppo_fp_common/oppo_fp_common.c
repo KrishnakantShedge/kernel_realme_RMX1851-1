@@ -150,7 +150,7 @@ exit:
 }
 
 
-static ssize_t fp_id_node_read(struct file *file, char __user *buf, size_t count, loff_t *pos) {
+static inline ssize_t fp_id_node_read(struct file *file, char __user *buf, size_t count, loff_t *pos) {
     char page[FP_ID_MAX_LENGTH] = { 0 };
     char *p = page;
     int len = 0;
