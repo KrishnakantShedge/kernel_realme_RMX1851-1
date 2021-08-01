@@ -51,6 +51,7 @@ module_param(wake_boost_duration, short, 0644);
 /* Available bits for boost state */
 enum {
 	SCREEN_OFF,
+	SCREEN_ON,
 	INPUT_BOOST,
 	MAX_BOOST,
 };
@@ -94,7 +95,7 @@ static unsigned int get_min_freq(struct cpufreq_policy *policy)
 	struct boost_drv *b = &boost_drv_g;
 	unsigned int freq;
 
-	if (test_bit(SCREEN_OFF, &b->state) || is_battery_saver_on())
+	if (test_bit(SCREEN_OFF, &b->state))
 	{
 		if (cpumask_test_cpu(policy->cpu, cpu_lp_mask))
 			freq = idle_min_freq_lp;
@@ -132,7 +133,7 @@ bool should_kick_frame_boost(unsigned long timeout_ms)
 
 static void __cpu_input_boost_kick(struct boost_drv *b)
 {
-	if (test_bit(SCREEN_OFF, &b->state) || is_battery_saver_on())
+	if (test_bit(SCREEN_OFF, &b->state))
 		return;
 
 	if (!input_boost_duration)
@@ -241,7 +242,7 @@ static int cpu_notifier_cb(struct notifier_block *nb, unsigned long action,
 	policy->min = get_min_freq(policy);
 
 	/* Pin min freq to lowest when battery saver is on*/
-	if (is_battery_saver_on()) {
+	if (is_battery_saver_on() && test_bit(SCREEN_ON, &b->state)) {
 		policy->min = policy->cpuinfo.min_freq;
 		return NOTIFY_OK;
 	}
