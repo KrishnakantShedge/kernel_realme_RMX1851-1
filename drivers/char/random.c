@@ -1891,7 +1891,7 @@ const struct file_operations random_fops = {
 	.read  = sdevice_read,
 	.write = sdevice_write,
 	#else
-	.read  = urandom_read,
+	.read  = random_read,
 	.write = random_write,
 	#endif
 	.poll  = random_poll,
