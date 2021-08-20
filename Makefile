@@ -994,6 +994,10 @@ KBUILD_CFLAGS	+= $(call cc-option,-fgcse-sm)
 # use the deterministic mode of AR if available
 KBUILD_ARFLAGS := $(call ar-option,D)
 
+# As per gcc docs when using computed gotos disabling could
+# result in better run-time performing
+KBUILD_CFLAGS   += -fno-gcse
+
 include scripts/Makefile.kasan
 include scripts/Makefile.extrawarn
 include scripts/Makefile.ubsan
