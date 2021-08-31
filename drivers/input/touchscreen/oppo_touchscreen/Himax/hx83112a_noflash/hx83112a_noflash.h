@@ -18,10 +18,12 @@
 
 /*********PART1:Head files**********************/
 #include <linux/i2c.h>
-#ifdef CONFIG_FB
-#include <linux/fb.h>
+
+#ifdef CONFIG_DRM_MSM
+#include <linux/msm_drm_notify.h>
 #include <linux/notifier.h>
 #endif
+
 #ifdef CONFIG_SPI_MT65XX
 #include <linux/platform_data/spi-mt65xx.h>
 #endif
