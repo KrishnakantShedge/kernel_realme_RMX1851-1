@@ -322,18 +322,14 @@ static void msm_restart_prepare(const char *cmd)
 	}
 #endif /* VENDOR_EDIT */
 
-#ifdef CONFIG_QCOM_PRESERVE_MEM
 	need_warm_reset = true;
-#endif
 
 	if (force_warm_reboot)
 		pr_info("Forcing a warm reset of the system\n");
 
-	/* Hard reset the PMIC unless memory contents must be maintained. */
-	if (force_warm_reboot || need_warm_reset)
-		qpnp_pon_system_pwr_off(PON_POWER_OFF_WARM_RESET);
-	else
-		qpnp_pon_system_pwr_off(PON_POWER_OFF_HARD_RESET);
+	qpnp_pon_set_restart_reason(0x00);
+	qpnp_pon_system_pwr_off(PON_POWER_OFF_WARM_RESET);
+	qpnp_pon_set_restart_reason(0x00);
 
 #ifndef VENDOR_EDIT
 /* OPPO 2013.07.09 hewei modify begin for restart mode*/
