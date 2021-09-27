@@ -148,8 +148,6 @@ void operate_mode_switch(struct touchpanel_data *ts)
                 ts->ts_ops->mode_switch(ts->chip_data, MODE_GESTURE, true);
                 if (ts->mode_switch_type == SEQUENCE)
                     ts->ts_ops->mode_switch(ts->chip_data, MODE_NORMAL, true);
-                if (ts->fp_enable == 1)
-                    ts->fingerprint_underscreen_support = 1;
                 if (ts->fingerprint_underscreen_support)
                     ts->ts_ops->enable_fingerprint(ts->chip_data, !!ts->fp_enable);
                 if ((ts->gesture_enable != 1) && ts->ts_ops->enable_gesture_mask)
@@ -470,10 +468,12 @@ static void tp_gesture_handle(struct touchpanel_data *ts)
         input_sync(ts->input_dev);
         input_report_key(ts->input_dev, KEY_F4, 0);
         input_sync(ts->input_dev);
-        input_report_key(ts->input_dev, key, 1);
-        input_sync(ts->input_dev);
-        input_report_key(ts->input_dev, key, 0);
-        input_sync(ts->input_dev);
+	if (enabled) {
+            input_report_key(ts->input_dev, key, 1);
+            input_sync(ts->input_dev);
+            input_report_key(ts->input_dev, key, 0);
+            input_sync(ts->input_dev);
+        }
     } else if (gesture_info_temp.gesture_type == FingerprintDown) {
         ts->fp_info.touch_state = 1;
         opticalfp_irq_handler(&ts->fp_info);
