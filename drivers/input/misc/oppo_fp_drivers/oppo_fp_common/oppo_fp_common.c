@@ -90,7 +90,7 @@ static char lcd_manu[FP_ID_MAX_LENGTH] = CHIP_UNKNOWN; /* the length of this str
 static struct fp_data *fp_data_ptr = NULL;
 char g_engineermode_menu_config[ENGINEER_MENU_SELECT_MAXLENTH] = ENGINEER_MENU_DEFAULT;
 
-static int fp_gpio_parse_parent_dts(struct fp_data *fp_data)
+static inline int fp_gpio_parse_parent_dts(struct fp_data *fp_data)
 {
     int ret = FP_OK;
     int fp_id_index = 0;
@@ -173,7 +173,7 @@ static inline ssize_t fp_id_node_read(struct file *file, char __user *buf, size_
     return len < count ? len  : count;
 }
 
-static ssize_t fp_id_node_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
+static inline ssize_t fp_id_node_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
 {
     size_t local_count;
     if (count <= 0) {
@@ -196,7 +196,7 @@ static struct file_operations fp_id_node_ctrl = {
     .write = fp_id_node_write,
 };
 
-static int fp_gpio_parse_child_dts(struct fp_data *fp_data)
+static inline int fp_gpio_parse_child_dts(struct fp_data *fp_data)
 {
     int child_node_index = 0;
     int ret = 0;
@@ -291,7 +291,7 @@ exit :
     return ret;
 }
 
-static int fp_register_proc_fs(void)
+static inline int fp_register_proc_fs(void)
 {
     int ret = FP_OK;
     /*  make the proc /proc/fp_id  */
@@ -376,7 +376,7 @@ fp_vendor_t get_fpsensor_type(void)
 }
 
 
-static int oppo_fp_common_probe(struct platform_device *fp_dev)
+static inline int oppo_fp_common_probe(struct platform_device *fp_dev)
 {
     int ret = 0;
     struct device *dev = &fp_dev->dev;
@@ -434,7 +434,7 @@ exit:
     return ret;
 }
 
-static int oppo_fp_common_remove(struct platform_device *pdev)
+static inline int oppo_fp_common_remove(struct platform_device *pdev)
 {
     return FP_OK;
 }
@@ -454,7 +454,7 @@ static struct platform_driver oppo_fp_common_driver = {
     },
 };
 
-static int __init oppo_fp_common_init(void)
+static inline int __init oppo_fp_common_init(void)
 {
     return platform_driver_register(&oppo_fp_common_driver);
 }
