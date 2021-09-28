@@ -94,7 +94,7 @@ struct fpc1020_data {
         struct regulator                                *vreg[ARRAY_SIZE(vreg_conf)];
 };
 
-static int fpc1020_request_named_gpio(struct fpc1020_data *fpc1020,
+static inline int fpc1020_request_named_gpio(struct fpc1020_data *fpc1020,
                 const char *label, int *gpio)
 {
         struct device *dev = fpc1020->dev;
@@ -117,7 +117,7 @@ static int fpc1020_request_named_gpio(struct fpc1020_data *fpc1020,
         return 0;
 }
 
-static int vreg_setup(struct fpc1020_data *fpc1020, const char *name,
+static inline int vreg_setup(struct fpc1020_data *fpc1020, const char *name,
                 bool enable)
 {
         size_t i;
@@ -185,7 +185,7 @@ found:
 /* ziqing.guo@BasicDrv.Sensor, 2016/01/26, modify for enable/disable irq */
 static DEFINE_SPINLOCK(fpc1020_lock);
 
-static int fpc1020_enable_irq(struct fpc1020_data *fpc1020, bool enable)
+static inline int fpc1020_enable_irq(struct fpc1020_data *fpc1020, bool enable)
 {
         spin_lock_irq(&fpc1020_lock);
         if (enable) {
@@ -217,7 +217,7 @@ static int fpc1020_enable_irq(struct fpc1020_data *fpc1020, bool enable)
  * sysf node to check the interrupt status of the sensor, the interrupt
  * handler should perform sysf_notify to allow userland to poll the node.
  */
-static ssize_t irq_get(struct device *device,
+static inline ssize_t irq_get(struct device *device,
                 struct device_attribute *attribute,
                 char *buffer)
 {
@@ -231,7 +231,7 @@ static ssize_t irq_get(struct device *device,
  * writing to the irq node will just drop a printk message
  * and return success, used for latency measurement.
  */
-static ssize_t irq_ack(struct device *device,
+static inline ssize_t irq_ack(struct device *device,
                 struct device_attribute* attribute,
                 const char *buffer, size_t count)
 {
@@ -241,7 +241,7 @@ static ssize_t irq_ack(struct device *device,
 }
 
 
-static ssize_t regulator_enable_set(struct device *dev,
+static inline ssize_t regulator_enable_set(struct device *dev,
                 struct device_attribute *attribute, const char *buffer, size_t count)
 {
         int op = 0;
@@ -267,7 +267,7 @@ static ssize_t regulator_enable_set(struct device *dev,
 
 #ifdef VENDOR_EDIT
 /* ziqing.guo@BasicDrv.Sensor, 2016/01/26, modify for enable/disable irq */
-static ssize_t irq_enable_set(struct device *dev,
+static inline ssize_t irq_enable_set(struct device *dev,
                 struct device_attribute *attribute, const char *buffer, size_t count)
 {
         int op = 0;
@@ -289,7 +289,7 @@ static ssize_t irq_enable_set(struct device *dev,
         return rc ? rc : count;
 }
 
-static ssize_t irq_enable_get(struct device *dev,
+static inline ssize_t irq_enable_get(struct device *dev,
                 struct device_attribute* attribute,
                 char *buffer)
 {
@@ -298,7 +298,7 @@ static ssize_t irq_enable_get(struct device *dev,
 }
 #endif
 
-static ssize_t wakelock_enable_set(struct device *dev,
+static inline ssize_t wakelock_enable_set(struct device *dev,
                 struct device_attribute *attribute, const char *buffer, size_t count)
 {
         int op = 0;
@@ -371,7 +371,7 @@ static irqreturn_t fpc1020_irq_handler(int irq, void *handle)
         return IRQ_HANDLED;
 }
 
-static int fpc1020_probe(struct platform_device *pdev)
+static inline int fpc1020_probe(struct platform_device *pdev)
 {
         struct device *dev = &pdev->dev;
         int rc = 0;
@@ -495,7 +495,7 @@ static struct platform_driver fpc1020_driver = {
         .probe = fpc1020_probe,
 };
 
-static int __init fpc1020_init(void)
+static inline int __init fpc1020_init(void)
 {
 	int rc = platform_driver_register(&fpc1020_driver);
 
@@ -507,7 +507,7 @@ static int __init fpc1020_init(void)
 	return rc;
 }
 
-static void __exit fpc1020_exit(void)
+static inline void __exit fpc1020_exit(void)
 {
 	pr_info("%s\n", __func__);
 	platform_driver_unregister(&fpc1020_driver);
