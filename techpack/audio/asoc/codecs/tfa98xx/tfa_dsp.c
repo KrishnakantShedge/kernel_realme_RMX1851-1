@@ -2729,7 +2729,6 @@ enum Tfa98xx_Error tfaRunSpeakerCalibration(Tfa98xx_handle_t handle, int profile
         err = tfa98xx_supported_speakers(handle, &spkr_count);
 
         if (spkr_count == 1) {
-            pr_info("%s: %d mOhms \n", __func__, handles_local[handle].mohm[0]);
             #ifdef VENDOR_EDIT
             /*xiang.fei@PSW.MM.AudioDriver.FTM, 2017/02/15, Add for ringing*/
             if(ftm_mode == BOOT_MODE_FACTORY)
