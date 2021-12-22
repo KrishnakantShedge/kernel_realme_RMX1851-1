@@ -2628,10 +2628,6 @@ int smblib_get_prop_usb_online(struct smb_charger *chg,
 
 	if (get_client_vote_locked(chg->usb_icl_votable, USER_VOTER) == 0) {
 		val->intval = false;
-#ifdef VENDOR_EDIT
-/* Jianchao.Shi@BSP.CHG.Basic, 2017/04/04, sjc Add for debug */
-		printk(KERN_ERR "smblib_get_prop_usb_online false\n");
-#endif
 		return rc;
 	}
 
@@ -3776,10 +3772,6 @@ void smblib_usb_plugin_hard_reset_locked(struct smb_charger *chg)
 		switch_usb_state(0);
 	}
 	#endif
-#ifdef VENDOR_EDIT
-/* Jianchao.Shi@BSP.CHG.Basic, 2016/12/20, sjc Add for charging */
-	printk(KERN_ERR "!!!!! smblib_usb_plugin_hard_reset_locked: [%d]\n", vbus_rising);
-#endif
 
 	if (vbus_rising) {
 		/* Remove FCC_STEPPER 1.5A init vote to allow FCC ramp up */
@@ -3840,7 +3832,6 @@ void smblib_usb_plugin_hard_reset_locked(struct smb_charger *chg)
 #ifdef VENDOR_EDIT
 /* Jianchao.Shi@BSP.CHG.Basic, 2018/07/13, sjc Add for fake typec */
 	if (chg->fake_typec_insertion == true && !vbus_rising) {
-		printk(KERN_ERR "!!! %s: fake typec unplug\n", __func__);
 		chg->fake_typec_insertion = false;
 		chg->typec_mode = POWER_SUPPLY_TYPEC_NONE;
 	}
@@ -3877,11 +3868,6 @@ void smblib_usb_plugin_locked(struct smb_charger *chg)
 	#endif
 	smblib_set_opt_freq_buck(chg, vbus_rising ? chg->chg_freq.freq_5V :
 						chg->chg_freq.freq_removal);
-
-#ifdef VENDOR_EDIT
-/* Jianchao.Shi@BSP.CHG.Basic, 2016/12/20, sjc Add for charging */
-	printk(KERN_ERR "!!!!! smblib_usb_plugin_locked: [%d]\n", vbus_rising);
-#endif
 
 	if (vbus_rising) {
 		if (smblib_get_prop_dfp_mode(chg) != POWER_SUPPLY_TYPEC_NONE) {
@@ -3975,7 +3961,6 @@ void smblib_usb_plugin_locked(struct smb_charger *chg)
 #ifdef VENDOR_EDIT
 /* Jianchao.Shi@BSP.CHG.Basic, 2018/07/13, sjc Add for fake typec */
 	if (chg->fake_typec_insertion == true && !vbus_rising) {
-		printk(KERN_ERR "!!! %s: fake typec unplug\n", __func__);
 		chg->fake_typec_insertion = false;
 		chg->typec_mode = POWER_SUPPLY_TYPEC_NONE;
 	}
@@ -4322,7 +4307,6 @@ static void smblib_handle_apsd_done(struct smb_charger *chg, bool rising)
 
 #ifdef VENDOR_EDIT
 	/* tongfeng.Huang@BSP.CHG.Basic, 2018/07/05, sjc Add for charging */
-	printk(KERN_ERR "%s: !!!fg_oppo_set_input_current[%d]\n", __FUNCTION__, fg_oppo_set_input_current);
 	if(fg_oppo_set_input_current == false){
 		vote(chg->usb_icl_votable, USB_PSY_VOTER, true, 500000); //vote 500mA 
 	}
@@ -4354,10 +4338,6 @@ static void smblib_handle_apsd_done(struct smb_charger *chg, bool rising)
 	default:
 		break;
 	}
-#ifdef VENDOR_EDIT
-/* Jianchao.Shi@BSP.CHG.Basic, 2017/01/25, sjc Add for charging */
-	printk(KERN_ERR "!!!IRQ: apsd-done rising; %s detected\n", apsd_result->name);
-#endif
 	smblib_dbg(chg, PR_INTERRUPT, "IRQ: apsd-done rising; %s detected\n",
 		   apsd_result->name);
 }
@@ -4930,7 +4910,6 @@ static void smblib_handle_typec_cc_state_change(struct smb_charger *chg)
 			&& chg->typec_mode <= POWER_SUPPLY_TYPEC_POWERED_CABLE_ONLY);
 	if (dfp_status ^ current_status) {
 		dfp_status = current_status;
-		printk(KERN_ERR "!!!!! smblib_handle_typec_cc_state_change: [%d], mode[%d]\n", dfp_status, chg->typec_mode);
 	}
 #endif
 
@@ -5146,8 +5125,7 @@ irqreturn_t smblib_handle_switcher_power_ok(int irq, void *data)
 				msecs_to_jiffies(BOOST_BACK_UNVOTE_DELAY_MS));
 		}
 #else
-		if (printk_ratelimit())
-			smblib_err(chg, "Reverse boost detected: voting 0mA to suspend input\n");
+		smblib_err(chg, "Reverse boost detected: voting 0mA to suspend input\n");
 		if (chg->real_charger_type != POWER_SUPPLY_TYPE_USB_CDP
 				&& chg->real_charger_type != POWER_SUPPLY_TYPE_USB)
 			vote(chg->usb_icl_votable, BOOST_BACK_VOTER, true, 0);
@@ -5236,7 +5214,7 @@ int oppo_set_dpdm_status(int status)
 	struct oppo_chg_chip *chip = g_oppo_chip;
 
 	if (!chip) {
-		printk(KERN_ERR "[OPPO_CHG][%s]: g_oppo_chip not ready!\n", __func__);
+		chg_err("g_oppo_chip not ready!\n");
 		return rc;
 	}
 
@@ -5337,7 +5315,6 @@ static void smblib_uusb_otg_work(struct work_struct *work)
 /* Jianchao.Shi@BSP.CHG.Basic, 2017/03/01, sjc Add for charging */
 	if (otg_status ^ otg) {
 		otg_status = otg;
-		printk(KERN_ERR "!!!!! smblib_handle_usb_typec_change_for_uusb: otg status [%d]\n", otg_status);
 	}
 #endif
 	extcon_set_cable_state_(chg->extcon, EXTCON_USB_HOST, otg);
@@ -5733,14 +5710,14 @@ static int oppo_otg_get_power_role(void)
 	union power_supply_propval val = {0,};
 
 	if (!g_oppo_chip) {
-		printk(KERN_ERR "[OPPO_CHG][%s]: smb2_chg not ready!\n", __func__);
+		chg_err("smb2_chg not ready!\n");
 		return POWER_SUPPLY_TYPEC_PR_NONE;
 	}
 	chg = &g_oppo_chip->pmic_spmi.smb2_chip->chg;
 
 	rc = smblib_get_prop_typec_power_role(chg, &val);
 	if (rc < 0) {
-		printk(KERN_ERR "[OPPO_CHG][%s]: Couldn't get typec power role, rc=%d\n", __func__, rc);
+		chg_err("Couldn't get typec power role, rc=%d\n", rc);
 		return POWER_SUPPLY_TYPEC_PR_DUAL;
 	}
 	return val.intval;
@@ -5760,8 +5737,6 @@ static void typec_disable_cmd_work(struct work_struct *work)
 	rc = smblib_masked_write(chg, TYPE_C_INTRPT_ENB_SOFTWARE_CTRL_REG, TYPEC_DISABLE_CMD_BIT, 0);
 	if (rc < 0)
 		smblib_err(chg, "Couldn't write TYPE_C_INTRPT_ENB_SOFTWARE_CTRL_REG rc=%d\n", rc);
-
-	printk(KERN_ERR "!!! %s: re-active t-c module\n", __func__);
 
 	return;
 }
@@ -5912,12 +5887,11 @@ static void oppo_chg_monitor_work(struct work_struct *work)
 	if (counts >= (chip->batt_full ? 8 : 3)) {//because rechg counts=6
 		rc = smblib_read(chg, BATTERY_CHARGER_STATUS_8_REG, &stat);
 		if (rc < 0) {
-			printk(KERN_ERR "oppo_chg_monitor_work: Couldn't get BATTERY_CHARGER_STATUS_8_REG status rc=%d\n", rc);
+			chg_err("Couldn't get BATTERY_CHARGER_STATUS_8_REG status rc=%d\n", rc);
 			goto rerun_work;
 		}
 		if (get_client_vote(chg->usb_icl_votable, BOOST_BACK_VOTER) == 0
 				&& get_effective_result(chg->usb_icl_votable) <= USBIN_25MA) {
-			printk(KERN_ERR "oppo_chg_monitor_work: boost back\n");
 			if (chg->wa_flags & BOOST_BACK_WA)
 				vote(chg->usb_icl_votable, BOOST_BACK_VOTER, false, 0);
 		}
@@ -5927,25 +5901,23 @@ static void oppo_chg_monitor_work(struct work_struct *work)
 		}
 		if (stat & PRE_TERM_BIT) {
 			usb_online_status = true;
-			printk(KERN_ERR "oppo_chg_monitor_work: PRE_TERM_BIT is set[0x%x], clear it\n", stat);
 			rc = smblib_masked_write(chg, USBIN_CMD_IL_REG, USBIN_SUSPEND_BIT, 1);
 			if (rc < 0) {
-				printk(KERN_ERR "oppo_chg_monitor_work: Couldn't set USBIN_SUSPEND_BIT rc=%d\n", rc);
+				chg_err("Couldn't set USBIN_SUSPEND_BIT rc=%d\n", rc);
 				goto rerun_work;
 			}
 			msleep(50);
 			rc = smblib_masked_write(chg, USBIN_CMD_IL_REG, USBIN_SUSPEND_BIT, 0);
 			if (rc < 0) {
-				printk(KERN_ERR "oppo_chg_monitor_work: Couldn't clear USBIN_SUSPEND_BIT rc=%d\n", rc);
+				chg_err("Couldn't clear USBIN_SUSPEND_BIT rc=%d\n", rc);
 				goto rerun_work;
 			}
 			msleep(10);
 			rc = smblib_masked_write(chg, CMD_HVDCP_2_REG, RESTART_AICL_BIT, RESTART_AICL_BIT);
 			if (rc < 0) {
-				printk(KERN_ERR "oppo_chg_monitor_work: Couldn't set RESTART_AICL_BIT rc=%d\n", rc);
+				chg_err("Couldn't set RESTART_AICL_BIT rc=%d\n", rc);
 				goto rerun_work;
 			}
-			printk(KERN_ERR "oppo_chg_monitor_work: ichg[%d], fv[%d]\n", chip->icharging, oppo_chg_get_fv_monitor(chip));
 		}
 		counts = 0;
 	}
