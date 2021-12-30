@@ -886,10 +886,6 @@ int dsi_panel_tx_cmd_set(struct dsi_panel *panel,
 	cmds = mode->priv_info->cmd_sets[type].cmds;
 	count = mode->priv_info->cmd_sets[type].count;
 	state = mode->priv_info->cmd_sets[type].state;
-	#ifdef VENDOR_EDIT
-	/*liping-m@PSW.MM.Display.LCD.Stability,2018/9/26,add for oppo display new structure*/
-	pr_err("dsi_cmd %s\n", cmd_set_prop_map[type]);
-	#endif /*VENDOR_EDIT*/
 
 	if (count == 0) {
 		pr_debug("[%s] No commands to be sent for state(%d)\n",
@@ -4306,10 +4302,6 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	if (panel->type == EXT_BRIDGE)
 		return 0;
 
-#ifdef VENDOR_EDIT
-/*liping-m@PSW.MM.Display.Lcd.Stability, 2018/9/26,add to mark power states*/
-	pr_err("debug for dsi_panel_enable\n");
-#endif
 	mutex_lock(&panel->panel_lock);
 
 	rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_ON);
@@ -4393,10 +4385,6 @@ int dsi_panel_disable(struct dsi_panel *panel)
 	if (panel->type == EXT_BRIDGE)
 		return 0;
 
-#ifdef VENDOR_EDIT
-/*liping-m@PSW.MM.Display.Lcd.Stability, 2018/9/26,add to mark power states*/
-	pr_err("debug for dsi_panel_disable\n");
-#endif
 	mutex_lock(&panel->panel_lock);
 
 	/* Avoid sending panel off commands when ESD recovery is underway */
