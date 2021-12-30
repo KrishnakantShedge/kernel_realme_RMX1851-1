@@ -1111,12 +1111,7 @@ static int msm_dmic_event(struct snd_soc_dapm_widget *w,
 	#endif /* VENDOR_EDIT */
 
 	pdata = snd_soc_card_get_drvdata(codec->component.card);
-	#ifndef VENDOR_EDIT
-	/*Jianfeng.Qiu@PSW.MM.AudioDriver.Codec, 2019/03/22, Modify for print log*/
 	pr_debug("%s: event = %d\n", __func__, event);
-	#else /* VENDOR_EDIT */
-	pr_info("%s: event = %d\n", __func__, event);
-	#endif /* VENDOR_EDIT */
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 		#ifdef VENDOR_EDIT
@@ -1183,12 +1178,7 @@ static int msm_int_mclk0_event(struct snd_soc_dapm_widget *w,
 	int ret = 0;
 
 	pdata = snd_soc_card_get_drvdata(codec->component.card);
-	#ifndef VENDOR_EDIT
-	/*Jianfeng.Qiu@PSW.MM.AudioDriver.Codec, 2019/03/22, Modify for print log*/
 	pr_debug("%s: event = %d\n", __func__, event);
-	#else /* VENDOR_EDIT */
-	pr_info("%s: event = %d\n", __func__, event);
-	#endif /* VENDOR_EDIT */
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 		ret = msm_cdc_pinctrl_select_active_state(pdata->pdm_gpio_p);
@@ -1228,12 +1218,7 @@ static int msm_int_dig_mclk0_event(struct snd_soc_dapm_widget *w,
 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
 
 	pdata = snd_soc_card_get_drvdata(codec->component.card);
-	#ifndef VENDOR_EDIT
-	/*Jianfeng.Qiu@PSW.MM.AudioDriver.Codec, 2019/03/22, Add for print log*/
 	pr_debug("%s: event = %d\n", __func__, event);
-	#else /* VENDOR_EDIT */
-	pr_info("%s: event = %d\n", __func__, event);
-	#endif /* VENDOR_EDIT */
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 		msm_digcdc_mclk_enable(codec, 1, true);
@@ -1417,14 +1402,8 @@ static int msm_int_mi2s_snd_startup(struct snd_pcm_substream *substream)
 	struct msm_asoc_mach_data *pdata = NULL;
 
 	pdata = snd_soc_card_get_drvdata(codec->component.card);
-	#ifndef VENDOR_EDIT
-	/*Jianfeng.Qiu@PSW.MM.AudioDriver.Codec, 2019/03/22, Add for print log*/
 	pr_debug("%s(): substream = %s  stream = %d\n", __func__,
 		 substream->name, substream->stream);
-	#else /* VENDOR_EDIT */
-	pr_info("%s(): substream = %s  stream = %d\n", __func__,
-		 substream->name, substream->stream);
-	#endif /* VENDOR_EDIT */
 
 	ret = int_mi2s_set_sclk(substream, true);
 	if (ret < 0) {
@@ -1472,14 +1451,8 @@ static void msm_int_mi2s_snd_shutdown(struct snd_pcm_substream *substream)
 	unsigned int interval_us = 0;
 	#endif /* VENDOR_EDIT */
 
-	#ifndef VENDOR_EDIT
-	/*Jianfeng.Qiu@PSW.MM.AudioDriver.Codec, 2019/03/22, Add for print log*/
 	pr_debug("%s(): substream = %s  stream = %d\n", __func__,
 			substream->name, substream->stream);
-	#else /* VENDOR_EDIT */
-	pr_info("%s(): substream = %s  stream = %d\n", __func__,
-			substream->name, substream->stream);
-	#endif /* VENDOR_EDIT */
 
 	#ifdef VENDOR_EDIT
 	/*Jianfeng.Qiu@PSW.MM.AudioDriver.Codec.1911528, 2019/03/22, Add for make sure dmic clock stable>50ms*/
