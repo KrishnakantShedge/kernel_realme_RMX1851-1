@@ -334,8 +334,9 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 	int error, last_dev;
 
     error = platform_suspend_prepare(state);
-    if (error)
+    if (error) {
         goto Platform_finish;
+    }
 
 	error = dpm_suspend_late(PMSG_SUSPEND);
 	if (error) {
@@ -347,8 +348,9 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 		goto Platform_finish;
 	}
 	error = platform_suspend_prepare_late(state);
-    if (error)
+    if (error) {
         goto Devices_early_resume;
+    }
 
 	error = dpm_suspend_noirq(PMSG_SUSPEND);
 	if (error) {
@@ -448,12 +450,14 @@ int suspend_devices_and_enter(suspend_state_t state)
 	int error;
 	bool wakeup = false;
 
-    if (!sleep_state_supported(state))
+    if (!sleep_state_supported(state)) {
         return -ENOSYS;
+    }
 
 	error = platform_suspend_begin(state);
-    if (error)
+    if (error) {
         goto Close;
+    }
 	suspend_console();
 	suspend_test_start();
 	error = dpm_suspend_start(PMSG_SUSPEND);
