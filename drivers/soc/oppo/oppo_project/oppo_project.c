@@ -430,7 +430,7 @@ struct file_operations ocp_proc_fops = {
 */
 static int oppo_eng_version = OPPO_ENG_VERSION_NOT_INIT;
 static int oppo_confidential = true;
-int get_eng_version(void)
+int __initdata get_eng_version(void)
 {
     int i = 0, eng_len = 3;
     char *substr = NULL;
@@ -461,7 +461,7 @@ int get_eng_version(void)
 }
 EXPORT_SYMBOL(get_eng_version);
 
-bool is_confidential(void)
+bool __initdata is_confidential(void)
 {
     if (oppo_eng_version != OPPO_ENG_VERSION_NOT_INIT)
         return oppo_confidential;
@@ -478,7 +478,7 @@ bool oppo_daily_build(void)
 }
 EXPORT_SYMBOL(oppo_daily_build);
 
-static ssize_t eng_version_read_proc(struct file *file, char __user *buf,
+static __initdata ssize_t eng_version_read_proc(struct file *file, char __user *buf,
                 size_t count, loff_t *off)
 {
         int ret = 0;
@@ -491,13 +491,13 @@ static ssize_t eng_version_read_proc(struct file *file, char __user *buf,
         return ret;
 }
 
-struct file_operations eng_version_proc_fops = {
+struct file_operations eng_version_proc_fops __refdata = {
         .read = eng_version_read_proc,
         .open  = simple_open,
         .owner = THIS_MODULE,
 };
 
-static ssize_t confidential_read_proc(struct file *file, char __user *buf,
+static __initdata ssize_t confidential_read_proc(struct file *file, char __user *buf,
                 size_t count, loff_t *off)
 {
         int ret = 0;
@@ -509,7 +509,7 @@ static ssize_t confidential_read_proc(struct file *file, char __user *buf,
         return ret;
 }
 
-struct file_operations confidential_proc_fops = {
+struct file_operations confidential_proc_fops __refdata = {
         .read = confidential_read_proc,
         .open  = simple_open,
         .owner = THIS_MODULE,
