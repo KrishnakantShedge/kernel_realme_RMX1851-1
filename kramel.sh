@@ -269,7 +269,10 @@ build_kernel() {
 		MAKE+=(
 			CROSS_COMPILE_ARM32=arm-eabi- \
 			CROSS_COMPILE=aarch64-elf- \
-			LD=aarch64-elf-ld.lld
+			LD=aarch64-elf-ld.lld \
+			AR=llvm-ar \
+			OBJDUMP=llvm-objdump \
+			STRIP=llvm-strip
 		)
 	fi
 	
