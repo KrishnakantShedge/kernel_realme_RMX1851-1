@@ -167,7 +167,7 @@ DATE=$(TZ=Asia/Kolkata date +"%Y%m%d-%s")
 	if [ $COMPILER = "clang" ]
 	then
 		msg "|| Cloning Clang-13 ||"
-		git clone --depth=1 https://gitlab.com/GhostMaster69-dev/Cosmic-Clang.git -b main clang-llvm
+		git clone --depth=1 https://gitlab.com/GhostMaster69-dev/Cosmic-Clang.git -b master clang-llvm
 		# Toolchain Directory defaults to clang-llvm
 		TC_DIR=$KERNEL_DIR/clang-llvm
 	fi
