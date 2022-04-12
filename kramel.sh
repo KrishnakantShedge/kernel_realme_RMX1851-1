@@ -257,12 +257,7 @@ build_kernel() {
 		MAKE+=(
 			CROSS_COMPILE=aarch64-linux-gnu- \
 			CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-			CC=clang \
-			NM=llvm-nm \
-			AR=llvm-ar \
-			OBJCOPY=llvm-objcopy \
-			OBJDUMP=llvm-objdump \
-			STRIP=llvm-strip
+			CC=clang
 		)
 	elif [ $COMPILER = "gcc" ]
 	then
